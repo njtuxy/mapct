@@ -11,8 +11,7 @@ angular.module('starter')
       return geo.$set(key, location);
     };
 
-    this.getGeoFireData = function(key){
+    this.getGeoFireData = function (key) {
       return geo.$get(key);
     };
-
-  })
+  });
