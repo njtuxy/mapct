@@ -30,7 +30,7 @@ angular.module('starter').controller('MapController',
 
       $scope.map = {
         defaults: {
-          tileLayer: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           maxZoom: 18,
           zoomControlPosition: 'bottomleft'
         },
@@ -154,7 +154,7 @@ angular.module('starter').controller('MapController',
     $scope.watchCurrent = function () {
       //geolocation watch example
       var watchOptions = {
-        frequency: 3000,
+        maximumAge: 3000,
         timeout: 3000,
         enableHighAccuracy: false // may cause errors if true
       };
@@ -173,33 +173,48 @@ angular.module('starter').controller('MapController',
           var lat = position.coords.latitude;
           var lng = position.coords.longitude;
 
-          GeoFireBaseService.insertGeoFireData('current_location', [lat, lng]);
+          GeoFireBaseService.insertGeoFireData('current_location', [lat, lng])
+            .then(function () {
+              //Set the map to current location
+              $scope.map.center = {
+                lat: lat,
+                lng: lng,
+                zoom: 16
+              };
 
-          //Set the map to current location
-          $scope.map.center = {
-            lat: lat,
-            lng: lng,
-            zoom: 12
-          };
+              $scope.map.markers[0] = {
+                lat: lat,
+                lng: lng,
+                //message: location.name,
+                focus: true,
+                draggable: false
+              };
 
-          $scope.map.markers[0] = {
-            lat: lat,
-            lng: lng,
-            //message: location.name,
-            focus: true,
-            draggable: false
-          };
-
-
+            })
         }
       );
 
     };
 
     $scope.talkToGeoFire = function () {
-      GeoFireBaseService.insertGeoFireData('newLocoation', [23, 23])
+      GeoFireBaseService.insertGeoFireData('newLocoation', [32, 22])
         .then(function () {
           console.log("insert data!!")
+          //Set the map to current location
+          $scope.map.center = {
+            lat: 20,
+            lng: 20,
+            zoom: 12
+          };
+
+          $scope.map.markers[0] = {
+            lat: 20,
+            lng: 20,
+            //message: location.name,
+            focus: true,
+            draggable: false
+          };
+
         })
         .catch(function (err) {
           console.log(error);

@@ -8,16 +8,11 @@
   <ion-nav-buttons side="right">
     <button ng-click="locate();" class="button button-icon icon ion-pinpoint"></button>
     <button ng-click="watchCurrent();" class="button button-icon icon ion-eye"></button>
-    <button ng-click="goToCurrentLocation();" class="button button-icon icon ion-fireball"></button>
+    <button ng-click="talkToGeoFire();" class="button button-icon icon ion-fireball"></button>
   </ion-nav-buttons>
 
   <ion-content data-tap-disabled="true">
-
-    <button ng-click="goToCurrentLocation()"></button>
-    <div> current_location: {{current_location}}</div>
-
     <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map"></leaflet>
-
   </ion-content>
 
 </ion-view>
