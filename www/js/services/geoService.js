@@ -1,7 +1,6 @@
 /**
  * Created by yxia on 9/1/15.
  */
-
 angular.module('starter')
   .service('GeoFireBaseService', function ($geofire) {
 
@@ -14,4 +13,4 @@ angular.module('starter')
     this.getGeoFireData = function (key) {
       return geo.$get(key);
     };
-  });
+  })

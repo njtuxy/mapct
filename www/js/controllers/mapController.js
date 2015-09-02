@@ -1,13 +1,5 @@
-angular.module('starter').controller('MapController',
-  function ($scope,
-            $cordovaGeolocation,
-            $stateParams,
-            $ionicModal,
-            $ionicPopup,
-            LocationsService,
-            InstructionsService,
-            GeoFireBaseService) {
-
+angular.module('starter')
+  .controller('MapController', function ($scope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicPopup, LocationsService, InstructionsService, GeoFireBaseService, FirebaseAccountService) {
     /**
      * Once state loaded, get put map on scope.
      */
@@ -118,10 +110,21 @@ angular.module('starter').controller('MapController',
       $scope.map.markers[locationKey] = {
         lat: location.lat,
         lng: location.lng,
-        message: location.name,
+        //message: location.name,
+        message: "<div ng-include src=\"'templates/mapMarkers/marker_popup.html'\"></div>",
         focus: true,
-        draggable: false
+        draggable: false,
+        icon: {
+          iconUrl: 'img/ping.png',
+          //iconSize:     [38, 95], // size of the icon
+          iconAnchor: [28, 13], // point of the icon which will
+          //type: 'awesomeMarker',
+          //icon: 'coffee',
+          //markerColor: 'red'
+          //markerColor: 'red'
+        }
       };
+
 
     };
 
@@ -199,7 +202,7 @@ angular.module('starter').controller('MapController',
     $scope.talkToGeoFire = function () {
       GeoFireBaseService.insertGeoFireData('newLocoation', [32, 22])
         .then(function () {
-          console.log("insert data!!")
+          console.log("insert data!!");
           //Set the map to current location
           $scope.map.center = {
             lat: 20,
@@ -219,5 +222,31 @@ angular.module('starter').controller('MapController',
         .catch(function (err) {
           console.log(error);
         })
+    };
+
+    $scope.loginFireBaseWithPassword = function (account) {
+      FirebaseAccountService.loginWithFireBase(account)
+        .then(function () {
+          console.log("logged in!")
+        })
+        .catch(function (error) {
+          console.error("ERROR: " + error);
+        })
+    };
+
+    $scope.singUpFireBaseWithPassword = function (account) {
+      FirebaseAccountService.singUpWithFireBase(account)
+        .then(function () {
+          console.log("logged in!")
+        })
+        .catch(function (error) {
+          console.error("ERROR: " + error);
+        })
     }
+
+  })
+
+
+  .controller('MarkerController', function () {
+
   });
