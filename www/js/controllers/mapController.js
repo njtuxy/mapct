@@ -1,5 +1,12 @@
 angular.module('starter')
-  .controller('MapController', function ($scope, $cordovaGeolocation, $stateParams, $ionicModal, $ionicPopup, LocationsService, InstructionsService, GeoFireBaseService, FirebaseAccountService) {
+  .controller('MapController', function ($scope,
+                                         $cordovaGeolocation,
+                                         $stateParams,
+                                         $ionicModal,
+                                         $ionicPopup,
+                                         LocationsService,
+                                         InstructionsService,
+                                         GeoFireBaseService) {
     /**
      * Once state loaded, get put map on scope.
      */
@@ -223,30 +230,70 @@ angular.module('starter')
           console.log(error);
         })
     };
-
-    $scope.loginFireBaseWithPassword = function (account) {
-      FirebaseAccountService.loginWithFireBase(account)
-        .then(function () {
-          console.log("logged in!")
-        })
-        .catch(function (error) {
-          console.error("ERROR: " + error);
-        })
-    };
-
-    $scope.singUpFireBaseWithPassword = function (account) {
-      FirebaseAccountService.singUpWithFireBase(account)
-        .then(function () {
-          console.log("logged in!")
-        })
-        .catch(function (error) {
-          console.error("ERROR: " + error);
-        })
-    }
-
   })
 
 
-  .controller('MarkerController', function () {
+  .controller('FireBaseAuthController', function ($scope, $rootScope) {
+    // Check for the user's authentication state
+    $rootScope.fbAuth.$onAuth(function (authData) {
+      if (authData) {
+        //$rootScope.loggedInUser = authData;
+        console.log('call once!');
+      }
+      else {
+        $scope.loggedInUser = null;
+      }
+    });
 
-  });
+    // Create a new user, called when a user submits the signup form
+    $scope.createUser = function (email, password) {
+      $rootScope.fbAuth.$createUser({
+        email: email,
+        password: password
+      }).then(function () {
+        // User created successfully, log them in
+        return $rootScope.fbAuth.$authWithPassword({
+          email: email,
+          password: password
+        });
+      }).then(function (authData) {
+        //$rootScope.loggedInUser = authData;
+      }).catch(function (error) {
+        console.log('Error: ', error);
+      });
+    };
+
+    // Login an existing user, called when a user submits the login form
+    $scope.login = function (email, password) {
+      $rootScope.fbAuth.$authWithPassword({
+        email: email,
+        password: password
+      }).then(function (authData) {
+        //$rootScope.loggedInUser = authData;
+      }).catch(function (error) {
+        console.log('Error: ', error);
+      });
+    };
+
+    // Log a user out
+    $scope.logout = function () {
+      $rootScope.fbAuth.$unauth();
+    };
+  })
+
+  .controller('MessageController', function ($scope, $ionicHistory, $firebaseArray, $rootScope) {
+    $ionicHistory.clearHistory();
+    $scope.addMessage = function (message) {
+      var authData = $rootScope.fbAuth.$getAuth();
+      console.log('call 2');
+      if (authData) {
+        var userReference = $rootScope.fb.child("users/" + authData.uid);
+        var syncArray = $firebaseArray(userReference.child("messages"));
+        syncArray.$add({"message" : message}).then(function () {
+          alert("message added!");
+        });
+      } else {
+        console.log("User is not logged in!!");
+      }
+    }
+  })

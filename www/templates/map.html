@@ -1,16 +1,25 @@
 <ion-view title="Map">
 
   <ion-nav-buttons side="left">
-    <button menu-toggle="left"class="button button-icon icon ion-navicon"></button>
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
 
 
   <ion-nav-buttons side="right">
     <button ng-click="locate();" class="button button-icon icon ion-pinpoint"></button>
     <button ng-click="watchCurrent();" class="button button-icon icon ion-eye"></button>
-    <button ng-click="loginFireBaseWithPassword({'email': 'a@a.com',  'password': 'a'})" class="button button-icon icon ion-log-in"></button>
-    <button ng-click="singUpFireBaseWithPassword({'email': 'a@accc.com',  'password': 'acc'})" class="button button-icon icon ion-person"></button>
+
+    <button ng-controller="FireBaseAuthController"
+            ng-click="login({'email': 'a@a.com',  'password': 'a'})"
+            class="button button-icon icon ion-log-in"></button>
+    <button ng-controller="FireBaseAuthController"
+            ng-click="createUser({'email': 'a@accc.com',  'password': 'acc'})"
+            class="button button-icon icon ion-person"></button>
+    <button ng-controller="FireBaseAuthController"
+            ng-click="testAuth()">TestAuth
+    </button>
   </ion-nav-buttons>
+
 
   <ion-content data-tap-disabled="true">
     <leaflet defaults="map.defaults" center="map.center" markers="map.markers" ng-if="map"></leaflet>
