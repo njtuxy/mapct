@@ -1,0 +1,34 @@
+<ion-view title="Login">
+  <ion-content data-tap-disabled="true">
+
+    <div>
+
+      <form name="login_form">
+        <div>
+          <label class="item item-input">
+            <input type="email" placeholder="Email" name="email" ng-model="user.email">
+          </label>
+
+          <label class="item item-input">
+            <input type="password" placeholder="Password" name="password" ng-model="user.password">
+          </label>
+        </div>
+
+        <button type="submit" class="log-in button button-block" ng-click="login(user.email, user.password)">
+          Sign In
+        </button>
+
+      </form>
+
+      <button class="log-out button button-block" ng-click="logout()">
+        Log Out
+      </button>
+
+
+      <!--<button-->
+      <!--ng-click="createUser({'email': 'a@accc.com',  'password': 'acc'})"-->
+      <!--class="button button-icon icon ion-person"></button>-->
+
+    </div>
+  </ion-content>
+</ion-view>

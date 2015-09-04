@@ -156,8 +156,6 @@ angular.module('starter')
 
         }, function (err) {
           // error
-          console.log("Location error!");
-          console.log(err);
         });
     };
 
@@ -233,12 +231,11 @@ angular.module('starter')
   })
 
 
-  .controller('FireBaseAuthController', function ($scope, $rootScope) {
+  .controller('FireBaseAuthController', function ($scope, $rootScope, $state) {
     // Check for the user's authentication state
     $rootScope.fbAuth.$onAuth(function (authData) {
       if (authData) {
         //$rootScope.loggedInUser = authData;
-        console.log('call once!');
       }
       else {
         $scope.loggedInUser = null;
@@ -269,7 +266,10 @@ angular.module('starter')
         email: email,
         password: password
       }).then(function (authData) {
+        console.log('user logged in!');
         //$rootScope.loggedInUser = authData;
+        $state.go("chat")
+
       }).catch(function (error) {
         console.log('Error: ', error);
       });
@@ -281,19 +281,55 @@ angular.module('starter')
     };
   })
 
-  .controller('MessageController', function ($scope, $ionicHistory, $firebaseArray, $rootScope) {
+  .controller('ChatController', function ($scope, $ionicHistory, $firebaseArray, $rootScope) {
     $ionicHistory.clearHistory();
-    $scope.addMessage = function (message) {
+
+    var authData = $rootScope.fbAuth.$getAuth();
+    if (authData) {
+      var messageRef = $rootScope.fb.child("users/" + authData.uid + "/messages");
+      messageRef.limitToLast(10).on('child_added', function (snapshot) {
+        var data = snapshot.val();
+        $scope.chatName = data.name+":"
+        $scope.chatText = data.text;
+      });
+      //var syncArray = $firebaseArray(userReference.child("messages"));
+    }
+
+
+    $scope.sendMessage = function (name, text, uid_of_reciever) {
       var authData = $rootScope.fbAuth.$getAuth();
-      console.log('call 2');
+      if (authData) {
+        var userReference = $rootScope.fb.child("users/" + uid_of_reciever);
+        var syncArray = $firebaseArray(userReference.child("messages"));
+        syncArray.$add({name: name, text: text}).then(function () {
+        });
+      } else {
+      }
+    };
+
+    $scope.sendMySelfAMessage = function (name, text) {
+      var authData = $rootScope.fbAuth.$getAuth();
       if (authData) {
         var userReference = $rootScope.fb.child("users/" + authData.uid);
         var syncArray = $firebaseArray(userReference.child("messages"));
-        syncArray.$add({"message" : message}).then(function () {
-          alert("message added!");
+        syncArray.$add({name: name, text: text}).then(function () {
         });
       } else {
-        console.log("User is not logged in!!");
       }
     }
-  })
+  });
+
+//  .controller('MessageDisplayController', function ($scope, $firebaseArray, $rootScope) {
+//    var authData = $rootScope.fbAuth.$getAuth();
+//    if (authData) {
+//      var messageRef = $rootScope.fb.child("users/" + authData.uid + "/messages");
+//      messageRef.limitToLast(10).on('child_added', function(snapshot){
+//        var data = snapshot.val();
+//        $scope.chatText = snapshot.val().text;
+//      });
+//      //var syncArray = $firebaseArray(userReference.child("messages"));
+//
+//
+//    }
+//  })
+//;

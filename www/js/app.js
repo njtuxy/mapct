@@ -45,13 +45,22 @@ angular.module('starter', ['ionic',
         }
       })
 
+      .state('login', {
+        url: "/login",
+        templateUrl: "templates/loginWindow/login.html",
+        controller: 'FireBaseAuthController'
+      })
+
       .state('chat', {
         url: "/chat",
         templateUrl: "templates/chat.html",
-        controller: 'MessageController'
+        controller: 'ChatController'
       })
 
-    //$urlRouterProvider.otherwise('/app/map');
-    $urlRouterProvider.otherwise('/chat');
+
+
+
+    $urlRouterProvider.otherwise('/app/map');
+    //$urlRouterProvider.otherwise('/login');
 
   });
